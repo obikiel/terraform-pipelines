@@ -1,0 +1,43 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  terraformVersion: '1.1.0'  # Specify the Terraform version
+  azureServiceConnection: 'Visual Studio Enterprise Subscription(ce086135-a07e-4d25-aaba-225d8fe01264)'  # Service connection to Azure
+
+stages:
+- stage: Deploy
+  displayName: 'Deploy stage'
+  jobs:
+  - job: Terraform
+    displayName: 'Terraform job'
+    steps:
+    - script: |
+        echo "##[group]Install Terraform"
+        curl -L -o /tmp/terraform.zip https://releases.hashicorp.com/terraform/${terraformVersion}/terraform_${terraformVersion}_linux_amd64.zip
+        sudo unzip /tmp/terraform.zip -d /usr/local/bin/
+        terraform -version
+        echo "##[endgroup]"
+      displayName: 'Install Terraform'
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: $(azureServiceConnection)
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          echo "##[group]Initialize Terraform"
+          terraform init
+          echo "##[endgroup]"
+
+          echo "##[group]Terraform Plan"
+          terraform plan -out=tfplan
+          echo "##[endgroup]"
+
+          echo "##[group]Terraform Apply"
+          terraform apply -auto-approve tfplan
+          echo "##[endgroup]"
+      displayName: 'Run Terraform'
