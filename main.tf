@@ -7,19 +7,19 @@ resource "azurerm_resource_group" "resource_group" {
   location = "West Europe"
 }
 
-resource "azurerm_service_plan" "app_service_plan" {
-  name                = "obikiel"
-  resource_group_name = azurerm_resource_group.resource_group.name
-  location            = azurerm_resource_group.resource_group.location
-  sku_name            = "B1"
-  os_type             = "Windows"
+module "appservice" {
+  source                = "./terraform-modules/appservice"
+#   app_service_plan_name = "obikiel"
+#   app_service_name      = "izzy-windows-app"
+#   resource_group_name   = "obioma"
+#   location              = "West Europe"
 }
 
-resource "azurerm_windows_web_app" "windows_web_app" {
-  name                = "izzy-windows-app"
-  resource_group_name = azurerm_resource_group.resource_group.name
-  location            = azurerm_resource_group.resource_group.location
-  service_plan_id     = azurerm_service_plan.app_service_plan.id 
-
-  site_config {}
+module "cost-management" {
+  source                = "./terraform-modules/cost-management"
+#   cost_export_name      = "billing"
+#   resource_group_name   = "obioma"
+#   timeframe             = "Monthly"
+#   storage_account_id    = storage_account_id  # Use a variable to avoid hardcoding sensitive data
+#   container_name        = "obicontainer"
 }
