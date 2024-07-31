@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_resource_group" "resource_group" {
   name     = "obioma"
   location = "West Europe"
@@ -9,10 +5,7 @@ resource "azurerm_resource_group" "resource_group" {
 
 module "appservice" {
   source                = "./terraform-modules/appservice"
-#   app_service_plan_name = "obikiel"
-#   app_service_name      = "izzy-windows-app"
-#   resource_group_name   = "obioma"
-#   location              = "West Europe"
+
 }
 
 module "cost-management" {

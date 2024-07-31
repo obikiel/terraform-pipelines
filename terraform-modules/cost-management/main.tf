@@ -1,7 +1,3 @@
-provider "azurerm" {
-  features {}
-}
-
 resource "azurerm_storage_account" "storage" {
   name                = "obiomaastorage"
   resource_group_name = azurerm_resource_group.resource_group.name
